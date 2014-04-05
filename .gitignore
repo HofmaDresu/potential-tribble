@@ -1,0 +1,8 @@
+*.userprefs
+*.sln
+*.suo
+.nuget/
+packages/
+
+[Bb]in/
+[Oo]bj/
