@@ -12,6 +12,6 @@ namespace ExternalInteractions
         List<string> GetScheduleTypes(string season);
         List<Link> GetDivisions(string season, string scheduleType);
         List<Link> GetTeams(Link division);
-        List<SoccerSchedule> GetSchedule(string season, string scheduleType, string division, string team);
+        List<SoccerGame> GetSchedule(Link team);
     }
 }

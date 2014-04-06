@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ExternalInteractions
 {
-    public struct SoccerSchedule
+    public struct SoccerGame
     {
-        DateTime GameTime;
-        string Field;
-        bool HomeTeam;
+        public DateTime Time;
+        public string Field;
+        public bool HomeTeam;
     }
 }

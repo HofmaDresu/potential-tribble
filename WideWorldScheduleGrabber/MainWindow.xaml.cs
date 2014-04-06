@@ -29,7 +29,7 @@ namespace WideWorldScheduleGrabber
             var types2 = wwr.GetScheduleTypes(seasons[1]);
             var divisions = wwr.GetDivisions(seasons[1], types2.Last());
             var teams = wwr.GetTeams(divisions[5]);
-            
+            var schedule = wwr.GetSchedule(teams[5]);
         }
     }
 }

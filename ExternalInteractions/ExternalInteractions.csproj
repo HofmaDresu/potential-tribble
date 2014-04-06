@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="IWideWorldReader.cs" />
     <Compile Include="Link.cs" />
-    <Compile Include="SoccerSchedule.cs" />
+    <Compile Include="SoccerGame.cs" />
     <Compile Include="WideWorldReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

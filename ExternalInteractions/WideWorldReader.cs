@@ -140,9 +140,49 @@ namespace ExternalInteractions
             return teams;
         }
 
-        public List<SoccerSchedule> GetSchedule(string season, string scheduleType, string division, string team)
+        public List<SoccerGame> GetSchedule(Link team)
         {
-            throw new NotImplementedException();
+            var schedule = new List<SoccerGame>();
+            var schedulePageReader = new StreamReader(WebRequest.Create(baseUrl + team.Url).GetResponse().GetResponseStream());
+            var teamId = string.Empty;
+            var teamSplitter = "Team: ";
+
+            var scheduleLineSeen = false;
+            while (!schedulePageReader.EndOfStream)
+            {
+                var responseLine = schedulePageReader.ReadLine();
+
+                if (responseLine.Contains(teamSplitter))
+                {
+                    var trimmedBeginningTeamId = responseLine.Substring(responseLine.IndexOf(teamSplitter) + teamSplitter.Length);
+                    teamId = trimmedBeginningTeamId.Substring(0, trimmedBeginningTeamId.IndexOf("-"));
+                }
+
+                scheduleLineSeen |= responseLine.Contains("Schedules");
+
+                if (scheduleLineSeen && responseLine.Contains("style3"))
+                {
+                    foreach (var row in responseLine.Split(new string[] { "</tr>" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var cells = row.Split(new string[] { "</td>" }, StringSplitOptions.RemoveEmptyEntries);
+                        //Date: cell 0
+                        //Time: cell 2
+                        //Field: cell 3
+                        //Home: cell 4
+                        var dateString = cells[0].Split('>').Last();
+                        var timeString = cells[2].Split(new string[] { "<span class='style3'>" }, StringSplitOptions.RemoveEmptyEntries).Last().Split('<').First();
+                        var field = cells[3].Split(new string[] { "<span class='style3'>" }, StringSplitOptions.RemoveEmptyEntries).Last().Split('<').First();
+                        var isHome = (cells[4].Split(new string[] { "<span class='style3'>" }, StringSplitOptions.RemoveEmptyEntries).Last().Split('<').First() == teamId);
+                        schedule.Add(new SoccerGame
+                        {
+                            Field = field,
+                            HomeTeam = isHome,
+                            Time = Convert.ToDateTime(String.Join(" ", dateString, timeString))
+                        });
+                    }
+                }
+            }
+            return schedule;
         }
     }
 }
