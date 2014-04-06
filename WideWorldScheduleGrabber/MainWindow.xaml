@@ -1,8 +1,17 @@
 ﻿<Window x:Class="WideWorldScheduleGrabber.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="221" Width="525">
     <Grid>
-        
+        <ComboBox HorizontalAlignment="Left" Margin="152,25,0,0" VerticalAlignment="Top" Width="342" Loaded="SessionBox_Loaded" SelectionChanged="SessionBox_SelectionChanged"/>
+        <Label Content="Select Session" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Width="124"/>
+        <ComboBox HorizontalAlignment="Left" Margin="152,56,0,0" VerticalAlignment="Top" Width="342" Loaded="SessionTypeBox_Loaded" SelectionChanged="SessionTypeBox_SelectionChanged" IsEnabled="False"/>
+        <Label Content="Select Session Type" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" Width="124"/>
+        <ComboBox HorizontalAlignment="Left" Margin="152,87,0,0" VerticalAlignment="Top" Width="342" Loaded="DivisionBox_Loaded" SelectionChanged="DivisionBox_SelectionChanged" IsEnabled="False"/>
+        <Label Content="Select Division" HorizontalAlignment="Left" Margin="10,87,0,0" VerticalAlignment="Top" Width="124"/>
+        <ComboBox HorizontalAlignment="Left" Margin="152,118,0,0" VerticalAlignment="Top" Width="342" Loaded="TeamBox_Loaded" SelectionChanged="TeamBox_SelectionChanged" IsEnabled="False"/>
+        <Label Content="Select Team" HorizontalAlignment="Left" Margin="10,118,0,0" VerticalAlignment="Top" Width="124"/>
+        <Button Content="Send to Calendar" HorizontalAlignment="Left" Margin="380,159,0,0" VerticalAlignment="Top" Width="114" Loaded="Button_Loaded" Click="Button_Click" IsEnabled="False"/>
+
     </Grid>
 </Window>
