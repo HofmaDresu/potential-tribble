@@ -8,10 +8,10 @@ namespace ExternalInteractions
 {
     public interface IWideWorldReader
     {
-        string GetSeasons();
-        string GetScheduleTypes(string season);
-        string GetDivisions(string season, string scheduleType);
-        string GetTeams(string season, string scheduleType, string division);
+        List<string> GetSeasons();
+        List<string> GetScheduleTypes(string season);
+        List<Link> GetDivisions(string season, string scheduleType);
+        List<Link> GetTeams(string season, string scheduleType, string division);
         List<SoccerSchedule> GetSchedule(string season, string scheduleType, string division, string team);
     }
 }

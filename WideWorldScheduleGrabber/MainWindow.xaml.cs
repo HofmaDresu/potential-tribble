@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExternalInteractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,12 @@ namespace WideWorldScheduleGrabber
         public MainWindow()
         {
             InitializeComponent();
+            var wwr = new WideWorldReader();
+            var seasons = wwr.GetSeasons();
+            var types1 = wwr.GetScheduleTypes(seasons[0]);
+            var types2 = wwr.GetScheduleTypes(seasons[1]);
+            int foo = 1;
+            
         }
     }
 }
