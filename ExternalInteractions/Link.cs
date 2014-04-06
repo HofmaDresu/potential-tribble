@@ -8,7 +8,7 @@ namespace ExternalInteractions
 {
     public struct Link
     {
-        string Name;
-        string Url;
+        public string Name;
+        public string Url;
     }
 }

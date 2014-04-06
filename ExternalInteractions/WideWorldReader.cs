@@ -10,15 +10,17 @@ namespace ExternalInteractions
 {
     public class WideWorldReader : IWideWorldReader
     {
-        private string SeasonsUrl = "http://secure.hammerweb.net/wws_membership/SchedulesScoresDisplay.asp";
+        private const string baseUrl = "http://secure.hammerweb.net/wws_membership/";
+        private const string SeasonsPage = "SchedulesScoresDisplay.asp";
         private string DivisionsPageHTML;
-        private string SeasonDesignation = "Season:";
-        private string ScheduleTypeStyle = "style128";
+        private const string SeasonDesignation = "Season:";
+        private const string ScheduleTypeStyle = "style128";
+        private const string trimHrefLineText = "href=\'";
 
         public List<string> GetSeasons()
         {
             var seasonsList = new List<string>();
-            DivisionsPageHTML = new StreamReader(WebRequest.Create(SeasonsUrl).GetResponse().GetResponseStream()).ReadToEnd();
+            DivisionsPageHTML = new StreamReader(WebRequest.Create(baseUrl + SeasonsPage).GetResponse().GetResponseStream()).ReadToEnd();
             var responseStreamReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(DivisionsPageHTML)));
             while (!responseStreamReader.EndOfStream)
             {
@@ -47,7 +49,6 @@ namespace ExternalInteractions
             while (!responseStreamReader.EndOfStream)
             {
                 var responseLine = responseStreamReader.ReadLine();
-                bool currentLineIsRequestedSeason = responseLine.Contains(season);
                 if (responseLine.Contains(SeasonDesignation))
                 {
                     addScheduleTypeForSeason = responseLine.Contains(season);
@@ -64,12 +65,79 @@ namespace ExternalInteractions
 
         public List<Link> GetDivisions(string season, string scheduleType)
         {
-            throw new NotImplementedException();
+            var divisions = new List<Link>();
+            if (string.IsNullOrEmpty(DivisionsPageHTML))
+            {
+                GetSeasons();
+            }
+
+            var responseStreamReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(DivisionsPageHTML)));
+
+            bool correctSeasonFound = false;
+            bool correctScheduleTypeFound = false;
+            while (!responseStreamReader.EndOfStream)
+            {
+                var responseLine = responseStreamReader.ReadLine();
+                
+                correctSeasonFound |= responseLine.Contains(season);
+                correctScheduleTypeFound |= (correctSeasonFound && responseLine.Contains(scheduleType));
+
+                
+                if (correctSeasonFound && correctScheduleTypeFound)
+                {
+                    if (responseLine.Contains("</table>"))
+                    {
+                        break;
+                    }
+
+                    foreach (var linkString in responseLine.Split(new string[] { "</a>" }, StringSplitOptions.RemoveEmptyEntries).Where(s => s.Contains(trimHrefLineText)))
+                    {
+                        var trimmedBeginningPage = linkString.Substring(linkString.IndexOf(trimHrefLineText) + trimHrefLineText.Length);
+                        var trimmedBeginningPageName = linkString.Substring(linkString.LastIndexOf('>')+1);
+
+
+                        divisions.Add(new Link
+                        {
+                            Url = trimmedBeginningPage.Substring(0, trimmedBeginningPage.IndexOf("'>")),
+                            Name = trimmedBeginningPageName
+                        });
+                    }
+                }
+            }
+
+            return divisions;
         }
 
-        public List<Link> GetTeams(string season, string scheduleType, string division)
+        public List<Link> GetTeams(Link division)
         {
-            throw new NotImplementedException();
+            var teams = new List<Link>();
+            var teamTableStyle = "style132";
+            var TeamsPageReader = new StreamReader(WebRequest.Create(baseUrl + division.Url).GetResponse().GetResponseStream());
+
+            while (!TeamsPageReader.EndOfStream)
+            {
+                var responseLine = TeamsPageReader.ReadLine();
+                if (responseLine.Contains(teamTableStyle))
+                {
+                    foreach (var row in responseLine.Split(new string[] {"</tr>"}, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var linkString = row.Split(new string[] {"</a>"}, StringSplitOptions.RemoveEmptyEntries)[1];
+
+                        var trimmedBeginningPage = linkString.Substring(linkString.IndexOf(trimHrefLineText) + trimHrefLineText.Length);
+                        var trimmedBeginningPageName = linkString.Substring(linkString.LastIndexOf('>')+1);
+
+
+                        teams.Add(new Link
+                        {
+                            Url = trimmedBeginningPage.Substring(0, trimmedBeginningPage.IndexOf("'>")),
+                            Name = trimmedBeginningPageName
+                        });
+                    }
+                }
+            }
+
+
+            return teams;
         }
 
         public List<SoccerSchedule> GetSchedule(string season, string scheduleType, string division, string team)

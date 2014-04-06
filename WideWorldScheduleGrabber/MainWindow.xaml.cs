@@ -26,9 +26,9 @@ namespace WideWorldScheduleGrabber
             InitializeComponent();
             var wwr = new WideWorldReader();
             var seasons = wwr.GetSeasons();
-            var types1 = wwr.GetScheduleTypes(seasons[0]);
             var types2 = wwr.GetScheduleTypes(seasons[1]);
-            int foo = 1;
+            var divisions = wwr.GetDivisions(seasons[1], types2.Last());
+            var teams = wwr.GetTeams(divisions[5]);
             
         }
     }
