@@ -1,5 +1,4 @@
 *.userprefs
-*.sln
 *.suo
 .nuget/
 packages/
