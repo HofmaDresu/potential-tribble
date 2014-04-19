@@ -2,6 +2,8 @@
 *.suo
 .nuget/
 packages/
+ClientSecret
+*.swp
 
 [Bb]in/
 [Oo]bj/
