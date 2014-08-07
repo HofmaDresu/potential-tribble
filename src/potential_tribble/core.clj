@@ -33,16 +33,19 @@
   (let [div-selectors (repeat (inc (.indexOf seasons season)) [:div (html/attr= :align "left")])]
     (flatten (conj (vec div-selectors) :table))))
 
+(defn get-full-league-table-selectors [season]
+  (let [div-selectors (repeat (inc (.indexOf seasons season)) [:div (html/attr= :align "left") :>])]
+    (let [full-selectors (flatten (conj (vec div-selectors) :table))]
+      full-selectors)))
+
 
 (defn get-league-tables [season]
-  (let [div-selectors (repeat (inc (.indexOf seasons season)) [:div (html/attr= :align "left")])]
-    (let [full-selectors (flatten (conj (vec div-selectors) :table))]
-      (let [league-tables (html/select wideworld-schedule-home (vec full-selectors))]
-        league-tables))))
+  (let [league-tables (html/select wideworld-schedule-home [:table (html/attr= :width "100%" :border "0" :cellspacing "0" :cellpadding "2")])]
+    (nth league-tables (.indexOf seasons season))))
 
 (defn get-leagues [season]
   (let [league-tables (get-league-tables season)]
-    (let [league-list (html/select (first league-tables) [:span.style128])]
+    (let [league-list (html/select  league-tables [:span.style128])]
      (flatten (map :content league-list)))))
 
 
