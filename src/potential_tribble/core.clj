@@ -54,3 +54,12 @@
 (defn get-division-href [season league division]
   (let [division (filter #(= (first (:content %)) division) (get-divisions season league))]
     (:href (:attrs (first division)))))
+
+(def wideworld-division-schedule-base-url "http://secure.hammerweb.net/wws_membership/")
+
+(defn get-wideworld-division-schedule [specific-url]
+  (get-page (str wideworld-division-schedule-base-url specific-url)))
+
+(defn get-team-table [specific-url]
+  (let [page (get-wideworld-division-schedule specific-url)]
+    (first (html/select page [:table (html/attr= :width "99%" :border "1" :align "center")]))))
