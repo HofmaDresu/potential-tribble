@@ -38,4 +38,19 @@
     (let [league-list (html/select  league-tables [:span.style128])]
      (flatten (map :content league-list)))))
 
+(defn get-division-tables [season league]
+  (let [league-tables (get-league-tables season)]
+    (let [leagues (get-leagues season)]
+      (let [division-tables (html/select league-tables [:table (html/attr= :width "190")])]
+        (nth division-tables (.indexOf leagues league))))))
 
+(defn get-divisions [season league]
+  (let [division-tables (get-division-tables season league)]
+    (map #(select-keys % [:content :attrs]) (html/select division-tables [:a]))))
+
+(defn get-division-names [season league]
+  (flatten (map :content (get-divisions season league))))
+
+(defn get-division-href [season league division]
+  (let [division (filter #(= (first (:content %)) division) (get-divisions season league))]
+    (:href (:attrs (first division)))))
